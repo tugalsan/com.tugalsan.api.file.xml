@@ -9,12 +9,12 @@ import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 import org.w3c.dom.*;
 import com.tugalsan.api.list.client.*;
+import com.tugalsan.api.unsafe.client.*;
 
 public class TS_FileXmlUtils {
 
     public static Path toFile(TGS_ListTable source, Path dest) {
-
-        try {
+        return TGS_UnSafe.compile(() -> {
             List<String> headers = source.getRow(0);
             var size = source.getRowSize();
 
@@ -40,15 +40,12 @@ public class TS_FileXmlUtils {
             var docSource = new DOMSource(doc);
             var result = new StreamResult(dest.toFile());
             transformer.transform(docSource, result);
-
             return dest;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 
     public static TGS_ListTable toTable(Path source, List<String> headers) {
-        try {
+        return TGS_UnSafe.compile(() -> {
             var dest = new TGS_ListTable();
             dest.setRow(0, headers);
 
@@ -71,8 +68,6 @@ public class TS_FileXmlUtils {
                 }
             });
             return dest;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 }
