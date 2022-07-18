@@ -18,9 +18,7 @@ public class TS_FileXmlUtils {
             List<String> headers = source.getRow(0);
             var size = source.getRowSize();
 
-            var dbFactory = DocumentBuilderFactory.newInstance();
-            var dBuilder = dbFactory.newDocumentBuilder();
-            var doc = dBuilder.newDocument();
+            var doc = create(dest);
 
             var rootElement = doc.createElement(root);
             IntStream.range(1, size).forEachOrdered(ri -> {
@@ -44,16 +42,30 @@ public class TS_FileXmlUtils {
         });
     }
 
+    public static Document create(Path dest) {
+        return TGS_UnSafe.compile(() -> {
+            var dbFactory = DocumentBuilderFactory.newInstance();
+            var dBuilder = dbFactory.newDocumentBuilder();
+            return dBuilder.newDocument();
+        });
+    }
+
+    public static Document parse(Path source) {
+        return TGS_UnSafe.compile(() -> {
+            var dbFactory = DocumentBuilderFactory.newInstance();
+            var dBuilder = dbFactory.newDocumentBuilder();
+            var doc = dBuilder.parse(source.toFile());
+            doc.getDocumentElement().normalize();
+            return doc;
+        });
+    }
+
     public static TGS_ListTable toTable(Path source, List<String> headers, String item) {
         return TGS_UnSafe.compile(() -> {
             var dest = new TGS_ListTable();
             dest.setRow(0, headers);
 
-            var dbFactory = DocumentBuilderFactory.newInstance();
-            var dBuilder = dbFactory.newDocumentBuilder();
-            var doc = dBuilder.parse(source.toFile());
-            doc.getDocumentElement().normalize();
-
+            var doc = parse(source);
 //            String tagRoot = doc.getDocumentElement().getNodeName();
             var nList = doc.getElementsByTagName(item);
             var size = nList.getLength();
