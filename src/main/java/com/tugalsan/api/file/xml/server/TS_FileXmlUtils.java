@@ -44,7 +44,7 @@ public class TS_FileXmlUtils {
         });
     }
 
-    public static TGS_ListTable toTable(Path source, List<String> headers) {
+    public static TGS_ListTable toTable(Path source, List<String> headers, String tag) {
         return TGS_UnSafe.compile(() -> {
             var dest = new TGS_ListTable();
             dest.setRow(0, headers);
@@ -55,7 +55,7 @@ public class TS_FileXmlUtils {
             doc.getDocumentElement().normalize();
 
 //            String tagRoot = doc.getDocumentElement().getNodeName();
-            var nList = doc.getElementsByTagName("record");
+            var nList = doc.getElementsByTagName(tag);
             var size = nList.getLength();
             IntStream.range(0, size).forEachOrdered(ri -> {
                 var recordNode = nList.item(ri);
