@@ -13,7 +13,7 @@ import com.tugalsan.api.unsafe.client.*;
 
 public class TS_FileXmlUtils {
 
-    public static Path toFile(TGS_ListTable source, Path dest) {
+    public static Path toFile(TGS_ListTable source, Path dest, String root, String item) {
         return TGS_UnSafe.compile(() -> {
             List<String> headers = source.getRow(0);
             var size = source.getRowSize();
@@ -22,9 +22,9 @@ public class TS_FileXmlUtils {
             var dBuilder = dbFactory.newDocumentBuilder();
             var doc = dBuilder.newDocument();
 
-            var rootElement = doc.createElement("root");
+            var rootElement = doc.createElement(root);
             IntStream.range(1, size).forEachOrdered(ri -> {
-                var recordI = doc.createElement("record");
+                var recordI = doc.createElement(item);
                 IntStream.range(0, headers.size()).forEachOrdered(ci -> {
                     var columnIHeader = doc.createElement(headers.get(ci));
                     var columnIValue = doc.createTextNode(source.getValueAsString(ri, ci));
@@ -44,7 +44,7 @@ public class TS_FileXmlUtils {
         });
     }
 
-    public static TGS_ListTable toTable(Path source, List<String> headers, String tag) {
+    public static TGS_ListTable toTable(Path source, List<String> headers, String item) {
         return TGS_UnSafe.compile(() -> {
             var dest = new TGS_ListTable();
             dest.setRow(0, headers);
@@ -55,7 +55,7 @@ public class TS_FileXmlUtils {
             doc.getDocumentElement().normalize();
 
 //            String tagRoot = doc.getDocumentElement().getNodeName();
-            var nList = doc.getElementsByTagName(tag);
+            var nList = doc.getElementsByTagName(item);
             var size = nList.getLength();
             IntStream.range(0, size).forEachOrdered(ri -> {
                 var recordNode = nList.item(ri);
