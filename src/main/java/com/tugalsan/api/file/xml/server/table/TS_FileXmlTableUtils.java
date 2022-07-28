@@ -18,7 +18,7 @@ public class TS_FileXmlTableUtils {
             List<String> headers = source.getRow(0);
             var size = source.getRowSize();
 
-            var doc = TS_FileXmlUtils.create(dest);
+            var doc = TS_FileXmlUtils.newDocument();
 
             var rootElement = doc.createElement(root);
             IntStream.range(1, size).forEachOrdered(ri -> {
@@ -51,7 +51,7 @@ public class TS_FileXmlTableUtils {
         var size = nList.getLength();
         IntStream.range(0, size).forEachOrdered(ri -> {
             var recordNode = nList.item(ri);
-            if (TS_FileXmlUtils.isValue(recordNode)) {
+            if (TS_FileXmlUtils.isNode(recordNode)) {
                 IntStream.range(0, headers.size()).forEachOrdered(ci -> {
                     var cellValue = ((Element) recordNode).getElementsByTagName(headers.get(ci)).item(0).getTextContent();
                     dest.setValue(ri + 1, ci, cellValue);
