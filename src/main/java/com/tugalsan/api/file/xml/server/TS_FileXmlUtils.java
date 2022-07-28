@@ -86,10 +86,13 @@ public class TS_FileXmlUtils {
     }
 
     public static boolean isBranch(Node node) {
-        return getChilderenStream(node)
-                .map(child -> node.getNodeName())
-                .filter(id -> !Objects.equals(id, "#text"))
-                .findAny().isPresent();
+        var nodeChild = getChilderenStream(node)
+                .filter(child -> !isText(child))
+                .findAny();
+        if (nodeChild.isPresent()) {
+            System.out.println("node " + node.getNodeName() + " detected as branch. Child nodeName: " + nodeChild.get().getNodeName());
+        }
+        return nodeChild.isPresent();
     }
 
     public static boolean isLeaf(Node node) {
@@ -140,11 +143,24 @@ public class TS_FileXmlUtils {
 
     public static void toFile(Document doc, Path dest) {
         TGS_UnSafe.execute(() -> {
-            var transformerFactory = TransformerFactory.newInstance();
-            var transformer = transformerFactory.newTransformer();
+            var factory = TransformerFactory.newInstance();
+            var transformer = factory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             var docSource = new DOMSource(doc);
-            var result = new StreamResult(dest.toFile());
-            transformer.transform(docSource, result);
+            var streamResult = new StreamResult(dest.toFile());
+            transformer.transform(docSource, streamResult);
         });
     }
+    /*
+    //https://stackoverflow.com/questions/12477392/prettify-xml-in-org-w3c-dom-document-to-file
+    OutputFormat format = new OutputFormat(document); //document is an instance of org.w3c.dom.Document
+format.setLineWidth(65);
+format.setIndenting(true);
+format.setIndent(2);
+Writer out = new StringWriter();
+XMLSerializer serializer = new XMLSerializer(out, format);
+serializer.serialize(document);
+
+String formattedXML = out.toString();
+    */
 }

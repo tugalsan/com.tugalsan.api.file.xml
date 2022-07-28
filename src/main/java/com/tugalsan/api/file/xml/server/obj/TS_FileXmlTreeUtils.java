@@ -20,10 +20,6 @@ public class TS_FileXmlTreeUtils {
         return toTree(doc.getDocumentElement());
     }
 
-    private static TGS_TreeAbstract<String, String> toTree(Element element) {
-        return toTree((Node) element);
-    }
-
     public static TGS_TreeAbstract<String, String> toTree(Node node) {
         return TS_FileXmlUtils.isBranch(node) ? toBranch(node) : toLeaf(node);
     }
@@ -41,7 +37,7 @@ public class TS_FileXmlTreeUtils {
         var vl = TS_FileXmlUtils.getChilderenStream(node)
                 .map(child -> TS_FileXmlUtils.getText(child))
                 .collect(Collectors.joining(""));
-        System.out.printf("nm-vl: [%s-%s]", nm, vl);
+        System.out.printf("nm-vl: [%s-%s]\n", nm, vl);
         return TGS_TreeLeaf.of(nm, vl);
     }
 
@@ -49,16 +45,20 @@ public class TS_FileXmlTreeUtils {
         return TGS_UnSafe.compile(() -> {
             var doc = TS_FileXmlUtils.newDocument();
             if (treeRoot instanceof TGS_TreeBranch<String, String> treeBranch) {
-                var nodeBranch = TS_FileXmlUtils.newNodeBranch(doc, treeRoot.id);
+                System.out.println("branch detected...");
+                var nodeBranch = TS_FileXmlUtils.newNodeBranch(doc, treeBranch.id);
                 loadNodeBranchContent(doc, nodeBranch, treeBranch);
+                TS_FileXmlUtils.addNode(doc, nodeBranch);
                 return doc;
             }
             if (treeRoot instanceof TGS_TreeLeaf<String, String> treeLeaf) {
-                var nodeLeaf = TS_FileXmlUtils.newNodeLeaf(doc, treeRoot.id);
+                System.out.println("leaf detected...");
+                var nodeLeaf = TS_FileXmlUtils.newNodeLeaf(doc, treeLeaf.id);
                 loadNodeLeafContent(nodeLeaf, treeLeaf);
                 TS_FileXmlUtils.addNode(doc, nodeLeaf);
                 return doc;
             }
+            System.out.println("comment detected...");
             var nodeComment = TS_FileXmlUtils.newNodeComment(doc, treeRoot.id);
             TS_FileXmlUtils.addNode(doc, nodeComment);
             return doc;
