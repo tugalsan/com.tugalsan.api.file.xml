@@ -78,11 +78,11 @@ public class TS_FileXmlUtils {
     }
 
     public static List<Node> getChilderenLst(Node node) {
-        return TGS_StreamUtils.toList(getChilderenStream(node));
+        return TGS_StreamUtils.toLst(getChilderenStream(node));
     }
 
     public static List<Node> getChilderenLstExceptText(Node node) {
-        return TGS_StreamUtils.toList(getChilderenStreamExceptText(node));
+        return TGS_StreamUtils.toLst(getChilderenStreamExceptText(node));
     }
 
     public static boolean isBranch(Node node) {

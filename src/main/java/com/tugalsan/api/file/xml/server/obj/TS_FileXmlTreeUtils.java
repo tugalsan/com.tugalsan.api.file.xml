@@ -25,7 +25,7 @@ public class TS_FileXmlTreeUtils {
     }
 
     public static TGS_TreeBranch<String, String> toBranch(Node node) {
-        List<TGS_TreeAbstract<String, String>> childeren = TGS_StreamUtils.toList(
+        List<TGS_TreeAbstract<String, String>> childeren = TGS_StreamUtils.toLst(
                 TS_FileXmlUtils.getChilderenStreamExceptText(node)
                         .map(child -> toTree(child))
         );
