@@ -42,7 +42,7 @@ public class TS_FileXmlTreeUtils {
     }
 
     public static Document toDocument(TGS_TreeAbstract<String, String> treeRoot) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             var doc = TS_FileXmlUtils.newDocument();
             if (treeRoot instanceof TGS_TreeBranch<String, String> treeBranch) {
                 System.out.println("branch detected...");

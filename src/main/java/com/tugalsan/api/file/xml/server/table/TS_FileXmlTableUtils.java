@@ -14,7 +14,7 @@ import com.tugalsan.api.unsafe.client.*;
 public class TS_FileXmlTableUtils {
 
     public static Path toFile(TGS_ListTable source, Path dest, String root, String item) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             List<String> headers = source.getRow(0);
             var size = source.getRowSize();
 

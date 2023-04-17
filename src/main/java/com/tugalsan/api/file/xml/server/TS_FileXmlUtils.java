@@ -17,7 +17,7 @@ import org.w3c.dom.*;
 public class TS_FileXmlUtils {
 
     public static DocumentBuilder createBuilder() {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             var factory = DocumentBuilderFactory.newInstance();
             return factory.newDocumentBuilder();
         });
@@ -36,7 +36,7 @@ public class TS_FileXmlUtils {
     }
 
     public static Document parse(String content) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             var input = TGS_ByteArrayUtils.toByteArray(content);
             try ( var bis = new ByteArrayInputStream(input)) {
                 var doc = createBuilder().parse(bis);
@@ -47,7 +47,7 @@ public class TS_FileXmlUtils {
     }
 
     public static Document parse(Path source) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             var input = source.toFile();
             var doc = createBuilder().parse(input);
             doc.getDocumentElement().normalize();
@@ -142,7 +142,7 @@ public class TS_FileXmlUtils {
     }
 
     public static void toFile(Document doc, Path dest) {
-        TGS_UnSafe.execute(() -> {
+        TGS_UnSafe.run(() -> {
             var factory = TransformerFactory.newInstance();
             var transformer = factory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
