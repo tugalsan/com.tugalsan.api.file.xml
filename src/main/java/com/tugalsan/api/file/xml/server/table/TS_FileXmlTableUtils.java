@@ -18,7 +18,7 @@ public class TS_FileXmlTableUtils {
             List<String> headers = source.getRow(0);
             var size = source.getRowSize();
 
-            var doc = TS_FileXmlUtils.newDocument();
+            var doc = TS_FileXmlUtils.of();
 
             var rootElement = doc.createElement(root);
             IntStream.range(1, size).forEachOrdered(ri -> {
@@ -33,11 +33,7 @@ public class TS_FileXmlTableUtils {
             });
             doc.appendChild(rootElement);
 
-            var transformerFactory = TransformerFactory.newInstance();
-            var transformer = transformerFactory.newTransformer();
-            var docSource = new DOMSource(doc);
-            var result = new StreamResult(dest.toFile());
-            transformer.transform(docSource, result);
+            TS_FileXmlUtils.save(doc, dest);
             return dest;
         });
     }
@@ -46,7 +42,7 @@ public class TS_FileXmlTableUtils {
         var dest = new TGS_ListTable();
         dest.setRow(0, headers);
 
-        var doc = TS_FileXmlUtils.parse(source);
+        var doc = TS_FileXmlUtils.of(source);
         var nList = doc.getElementsByTagName(item);
         var size = nList.getLength();
         IntStream.range(0, size).forEachOrdered(ri -> {

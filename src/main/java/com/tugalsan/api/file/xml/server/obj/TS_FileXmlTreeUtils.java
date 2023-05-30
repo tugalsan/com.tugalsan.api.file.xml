@@ -12,7 +12,7 @@ import org.w3c.dom.*;
 public class TS_FileXmlTreeUtils {
 
     public static TGS_TreeAbstract<String, String> toTree(Path source) {
-        var doc = TS_FileXmlUtils.parse(source);
+        var doc = TS_FileXmlUtils.of(source);
         return toTree(doc);
     }
 
@@ -43,7 +43,7 @@ public class TS_FileXmlTreeUtils {
 
     public static Document toDocument(TGS_TreeAbstract<String, String> treeRoot) {
         return TGS_UnSafe.call(() -> {
-            var doc = TS_FileXmlUtils.newDocument();
+            var doc = TS_FileXmlUtils.of();
             if (treeRoot instanceof TGS_TreeBranch<String, String> treeBranch) {
                 System.out.println("branch detected...");
                 var nodeBranch = TS_FileXmlUtils.newNodeBranch(doc, treeBranch.id);

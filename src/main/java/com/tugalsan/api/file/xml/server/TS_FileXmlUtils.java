@@ -16,15 +16,35 @@ import org.w3c.dom.*;
 
 public class TS_FileXmlUtils {
 
-    public static DocumentBuilder createBuilder() {
+    private static DocumentBuilder createBuilder() {
         return TGS_UnSafe.call(() -> {
             var factory = DocumentBuilderFactory.newInstance();
             return factory.newDocumentBuilder();
         });
     }
 
-    public static Document newDocument() {
+    public static Document of() {
         return createBuilder().newDocument();
+    }
+
+    public static Document of(CharSequence content) {
+        return TGS_UnSafe.call(() -> {
+            var input = TGS_ByteArrayUtils.toByteArray(content);
+            try (var bis = new ByteArrayInputStream(input)) {
+                var doc = createBuilder().parse(bis);
+                doc.getDocumentElement().normalize();
+                return doc;
+            }
+        });
+    }
+
+    public static Document of(Path source) {
+        return TGS_UnSafe.call(() -> {
+            var input = source.toFile();
+            var doc = createBuilder().parse(input);
+            doc.getDocumentElement().normalize();
+            return doc;
+        });
     }
 
     public static Node getNodeRoot(Document doc) {
@@ -33,26 +53,6 @@ public class TS_FileXmlUtils {
 
     public static NamedNodeMap getAttributes(Node node) {
         return node.getAttributes();
-    }
-
-    public static Document parse(String content) {
-        return TGS_UnSafe.call(() -> {
-            var input = TGS_ByteArrayUtils.toByteArray(content);
-            try ( var bis = new ByteArrayInputStream(input)) {
-                var doc = createBuilder().parse(bis);
-                doc.getDocumentElement().normalize();
-                return doc;
-            }
-        });
-    }
-
-    public static Document parse(Path source) {
-        return TGS_UnSafe.call(() -> {
-            var input = source.toFile();
-            var doc = createBuilder().parse(input);
-            doc.getDocumentElement().normalize();
-            return doc;
-        });
     }
 
     public static boolean isNode(Node node) {
@@ -141,7 +141,7 @@ public class TS_FileXmlUtils {
         doc.appendChild(child);
     }
 
-    public static void toFile(Document doc, Path dest) {
+    public static void save(Document doc, Path dest) {
         TGS_UnSafe.run(() -> {
             var factory = TransformerFactory.newInstance();
             var transformer = factory.newTransformer();
@@ -162,5 +162,5 @@ XMLSerializer serializer = new XMLSerializer(out, format);
 serializer.serialize(document);
 
 String formattedXML = out.toString();
-    */
+     */
 }
