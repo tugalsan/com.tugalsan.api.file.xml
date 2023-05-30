@@ -5,6 +5,7 @@ import com.tugalsan.api.stream.client.*;
 import com.tugalsan.api.string.client.*;
 import com.tugalsan.api.unsafe.client.*;
 import java.io.*;
+import static java.lang.System.out;
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.*;
@@ -83,7 +84,7 @@ public class TS_FileXmlUtils {
 
     public static Optional<Node> getChilderenNode(Node node, String nodeNameToFind) {
         return getChilderenLstExceptText(node).stream()
-                .filter(n -> node.getNodeName().equals(nodeNameToFind))
+                .filter(n -> n.getNodeName().equals(nodeNameToFind))
                 .findAny();
     }
 
