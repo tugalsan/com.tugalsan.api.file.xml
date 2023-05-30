@@ -107,9 +107,9 @@ public class TS_FileXmlUtils {
 
     public static boolean isText(Node node) {
         var isText = node instanceof Text;
-        if (isText) {
-            System.out.println("node is text: " + node.getNodeName());
-        }
+//        if (isText) {
+//            System.out.println("node is text: " + node.getNodeName());
+//        }
         return isText;
 //        return isText(node.getNodeName());
     }
