@@ -81,6 +81,12 @@ public class TS_FileXmlUtils {
         return TGS_StreamUtils.toLst(getChilderenStream(node));
     }
 
+    public static Optional<Node> getChilderenNode(Node node, String nodeNameToFind) {
+        return getChilderenLstExceptText(node).stream()
+                .filter(n -> node.getNodeName().equals(nodeNameToFind))
+                .findAny();
+    }
+
     public static List<Node> getChilderenLstExceptText(Node node) {
         return TGS_StreamUtils.toLst(getChilderenStreamExceptText(node));
     }
