@@ -1,6 +1,6 @@
 package com.tugalsan.api.file.xml.server.pom;
 
-import com.tugalsan.api.pack.client.*;
+import com.tugalsan.api.tuple.client.*;
 import com.tugalsan.api.tree.client.*;
 import java.util.*;
 
@@ -13,18 +13,18 @@ public class TS_FileXmlPomUtils {
         """;
     }
 
-    public static TGS_Pack2<TS_FileXmlPom, String> of(TGS_TreeAbstract<String, String> xmlObj) {
+    public static TGS_Tuple2<TS_FileXmlPom, String> of(TGS_TreeAbstract<String, String> xmlObj) {
         if (!Objects.equals(xmlObj.id, "project")) {
-            return new TGS_Pack2(null, "root.name not project, it is " + xmlObj.id);
+            return new TGS_Tuple2(null, "root.name not project, it is " + xmlObj.id);
         }
         if (xmlObj instanceof TGS_TreeLeaf<String, String>) {
-            return new TGS_Pack2(null, "pom is empty");
+            return new TGS_Tuple2(null, "pom is empty");
         }
         if (!(xmlObj instanceof TGS_TreeBranch<String, String>)) {
-            return new TGS_Pack2(null, "pom is not list");
+            return new TGS_Tuple2(null, "pom is not list");
         }
 
-        TGS_Pack2<TS_FileXmlPom, String> pck = TGS_Pack2.of(new TS_FileXmlPom(), null);
+        TGS_Tuple2<TS_FileXmlPom, String> pck = TGS_Tuple2.of(new TS_FileXmlPom(), null);
         var xmlObjLst = (TGS_TreeBranch<String, String>) xmlObj;
         
         pck.value0.pomId = new TS_FileXmlPomId();
