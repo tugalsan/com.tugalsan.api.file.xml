@@ -39,7 +39,7 @@ public class TS_FileXmlTableUtils {
     }
 
     public static TGS_ListTable toTable(Path source, List<String> headers, String item) {
-        var dest = new TGS_ListTable();
+        var dest = TGS_ListTable.ofStr();
         dest.setRow(0, headers);
 
         var doc = TS_FileXmlUtils.of(source);
