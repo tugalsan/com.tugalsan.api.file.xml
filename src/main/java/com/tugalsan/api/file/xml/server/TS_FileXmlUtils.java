@@ -5,7 +5,6 @@ import com.tugalsan.api.stream.client.*;
 import com.tugalsan.api.string.client.*;
 import com.tugalsan.api.unsafe.client.*;
 import java.io.*;
-import static java.lang.System.out;
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.*;
@@ -107,11 +106,12 @@ public class TS_FileXmlUtils {
     }
 
     public static boolean isText(Node node) {
-        var isText = node instanceof Text;
+        return node instanceof Text;
+//        var isText = node instanceof Text;
 //        if (isText) {
 //            System.out.println("node is text: " + node.getNodeName());
 //        }
-        return isText;
+//        return isText;
 //        return isText(node.getNodeName());
     }
 

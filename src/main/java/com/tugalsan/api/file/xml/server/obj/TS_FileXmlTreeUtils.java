@@ -5,7 +5,6 @@ import com.tugalsan.api.stream.client.*;
 import com.tugalsan.api.tree.client.*;
 import com.tugalsan.api.unsafe.client.*;
 import java.nio.file.*;
-import java.util.*;
 import java.util.stream.*;
 import org.w3c.dom.*;
 
@@ -25,7 +24,7 @@ public class TS_FileXmlTreeUtils {
     }
 
     public static TGS_TreeBranch<String, String> toBranch(Node node) {
-        List<TGS_TreeAbstract<String, String>> childeren = TGS_StreamUtils.toLst(
+        var childeren = TGS_StreamUtils.toLst(
                 TS_FileXmlUtils.getChilderenStreamExceptText(node)
                         .map(child -> toTree(child))
         );
