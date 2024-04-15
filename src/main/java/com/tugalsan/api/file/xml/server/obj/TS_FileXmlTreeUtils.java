@@ -3,16 +3,20 @@ package com.tugalsan.api.file.xml.server.obj;
 import com.tugalsan.api.file.xml.server.*;
 import com.tugalsan.api.stream.client.*;
 import com.tugalsan.api.tree.client.*;
-import com.tugalsan.api.unsafe.client.*;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import java.nio.file.*;
 import java.util.stream.*;
 import org.w3c.dom.*;
 
 public class TS_FileXmlTreeUtils {
 
-    public static TGS_TreeAbstract<String, String> toTree(Path source) {
-        var doc = TS_FileXmlUtils.of(source);
-        return toTree(doc);
+    public static TGS_UnionExcuse<TGS_TreeAbstract<String, String>> toTree(Path source) {
+        var u_doc = TS_FileXmlUtils.of(source);
+        if (u_doc.isExcuse()) {
+            return u_doc.toExcuse();
+        }
+        var doc = u_doc.value();
+        return TGS_UnionExcuse.of(toTree(doc));
     }
 
     private static TGS_TreeAbstract<String, String> toTree(Document doc) {
@@ -40,28 +44,30 @@ public class TS_FileXmlTreeUtils {
         return TGS_TreeLeaf.of(nm, vl);
     }
 
-    public static Document toDocument(TGS_TreeAbstract<String, String> treeRoot) {
-        return TGS_UnSafe.call(() -> {
-            var doc = TS_FileXmlUtils.of();
-            if (treeRoot instanceof TGS_TreeBranch<String, String> treeBranch) {
-                System.out.println("branch detected...");
-                var nodeBranch = TS_FileXmlUtils.newNodeBranch(doc, treeBranch.id);
-                loadNodeBranchContent(doc, nodeBranch, treeBranch);
-                TS_FileXmlUtils.addNode(doc, nodeBranch);
-                return doc;
-            }
-            if (treeRoot instanceof TGS_TreeLeaf<String, String> treeLeaf) {
-                System.out.println("leaf detected...");
-                var nodeLeaf = TS_FileXmlUtils.newNodeLeaf(doc, treeLeaf.id);
-                loadNodeLeafContent(nodeLeaf, treeLeaf);
-                TS_FileXmlUtils.addNode(doc, nodeLeaf);
-                return doc;
-            }
-            System.out.println("comment detected...");
-            var nodeComment = TS_FileXmlUtils.newNodeComment(doc, treeRoot.id);
-            TS_FileXmlUtils.addNode(doc, nodeComment);
-            return doc;
-        });
+    public static TGS_UnionExcuse<Document> toDocument(TGS_TreeAbstract<String, String> treeRoot) {
+        var u_doc = TS_FileXmlUtils.of();
+        if (u_doc.isExcuse()) {
+            return u_doc.toExcuse();
+        }
+        var doc = u_doc.value();
+        if (treeRoot instanceof TGS_TreeBranch<String, String> treeBranch) {
+            System.out.println("branch detected...");
+            var nodeBranch = TS_FileXmlUtils.newNodeBranch(doc, treeBranch.id);
+            loadNodeBranchContent(doc, nodeBranch, treeBranch);
+            TS_FileXmlUtils.addNode(doc, nodeBranch);
+            return TGS_UnionExcuse.of(doc);
+        }
+        if (treeRoot instanceof TGS_TreeLeaf<String, String> treeLeaf) {
+            System.out.println("leaf detected...");
+            var nodeLeaf = TS_FileXmlUtils.newNodeLeaf(doc, treeLeaf.id);
+            loadNodeLeafContent(nodeLeaf, treeLeaf);
+            TS_FileXmlUtils.addNode(doc, nodeLeaf);
+            return TGS_UnionExcuse.of(doc);
+        }
+        System.out.println("comment detected...");
+        var nodeComment = TS_FileXmlUtils.newNodeComment(doc, treeRoot.id);
+        TS_FileXmlUtils.addNode(doc, nodeComment);
+        return TGS_UnionExcuse.of(doc);
     }
 
     private static void loadNodeLeafContent(Node nodeLeaf, TGS_TreeLeaf<String, String> treeLeaf) {

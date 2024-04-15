@@ -1,7 +1,7 @@
 package com.tugalsan.api.file.xml.server.pom;
 
-import com.tugalsan.api.tuple.client.*;
 import com.tugalsan.api.tree.client.*;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import java.util.*;
 
 public class TS_FileXmlPomUtils {
@@ -13,42 +13,42 @@ public class TS_FileXmlPomUtils {
         """;
     }
 
-    public static TGS_Tuple2<TS_FileXmlPom, String> of(TGS_TreeAbstract<String, String> xmlObj) {
+    public static TGS_UnionExcuse<TS_FileXmlPom> of(TGS_TreeAbstract<String, String> xmlObj) {
         if (!Objects.equals(xmlObj.id, "project")) {
-            return new TGS_Tuple2(null, "root.name not project, it is " + xmlObj.id);
+            return TGS_UnionExcuse.ofExcuse(TS_FileXmlPomUtils.class.getSimpleName(), "of", "root.name not project, it is " + xmlObj.id);
         }
         if (xmlObj instanceof TGS_TreeLeaf<String, String>) {
-            return new TGS_Tuple2(null, "pom is empty");
+            return TGS_UnionExcuse.ofExcuse(TS_FileXmlPomUtils.class.getSimpleName(), "of", "pom is empty");
         }
         if (!(xmlObj instanceof TGS_TreeBranch<String, String>)) {
-            return new TGS_Tuple2(null, "pom is not list");
+            return TGS_UnionExcuse.ofExcuse(TS_FileXmlPomUtils.class.getSimpleName(), "of", "pom is not list");
         }
 
-        TGS_Tuple2<TS_FileXmlPom, String> pck = TGS_Tuple2.of(new TS_FileXmlPom(), null);
+        var pom = new TS_FileXmlPom();
         var xmlObjLst = (TGS_TreeBranch<String, String>) xmlObj;
         
-        pck.value0.pomId = new TS_FileXmlPomId();
+        pom.pomId = new TS_FileXmlPomId();
         xmlObjLst.childeren.forEach(child -> {
             if (Objects.equals(child.id, "modelVersion") && child instanceof TGS_TreeLeaf<String, String> childStr) {
-                pck.value0.modelVersion = childStr.value;
+                pom.modelVersion = childStr.value;
                 return;
             }
             if (Objects.equals(child.id, "groupId") && child instanceof TGS_TreeLeaf<String, String> childStr) {
-                pck.value0.pomId.groupId = childStr.value;
+                pom.pomId.groupId = childStr.value;
                 return;
             }
             if (Objects.equals(child.id, "groupId") && child instanceof TGS_TreeLeaf<String, String> childStr) {
-                pck.value0.pomId.artifactId = childStr.value;
+               pom.pomId.artifactId = childStr.value;
                 return;
             }
             if (Objects.equals(child.id, "version") && child instanceof TGS_TreeLeaf<String, String> childStr) {
-                pck.value0.pomId.version = childStr.value;
+                pom.pomId.version = childStr.value;
                 return;
             }
             
             System.out.println("Unknown tag name: " + child.id);
         });
 
-        return pck;
+        return TGS_UnionExcuse.of(pom);
     }
 }

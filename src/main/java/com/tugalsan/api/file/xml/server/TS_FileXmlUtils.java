@@ -3,7 +3,8 @@ package com.tugalsan.api.file.xml.server;
 import com.tugalsan.api.bytes.client.*;
 import com.tugalsan.api.stream.client.*;
 import com.tugalsan.api.string.client.*;
-import com.tugalsan.api.unsafe.client.*;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
+import com.tugalsan.api.union.client.TGS_UnionExcuseVoid;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
@@ -13,38 +14,55 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 public class TS_FileXmlUtils {
 
-    private static DocumentBuilder createBuilder() {
-        return TGS_UnSafe.call(() -> {
+    private static TGS_UnionExcuse<DocumentBuilder> createBuilder() {
+        try {
             var factory = DocumentBuilderFactory.newInstance();
-            return factory.newDocumentBuilder();
-        });
+            return TGS_UnionExcuse.of(factory.newDocumentBuilder());
+        } catch (ParserConfigurationException ex) {
+            return TGS_UnionExcuse.ofExcuse(ex);
+        }
     }
 
-    public static Document of() {
-        return createBuilder().newDocument();
+    public static TGS_UnionExcuse<Document> of() {
+        var u = createBuilder();
+        if (u.isExcuse()) {
+            return u.toExcuse();
+        }
+        return TGS_UnionExcuse.of(u.value().newDocument());
     }
 
-    public static Document of(CharSequence content) {
-        return TGS_UnSafe.call(() -> {
-            var input = TGS_ByteArrayUtils.toByteArray(content);
-            try (var bis = new ByteArrayInputStream(input)) {
-                var doc = createBuilder().parse(bis);
-                doc.getDocumentElement().normalize();
-                return doc;
+    public static TGS_UnionExcuse<Document> of(CharSequence content) {
+        var input = TGS_ByteArrayUtils.toByteArray(content);
+        try (var bis = new ByteArrayInputStream(input)) {
+            var u = createBuilder();
+            if (u.isExcuse()) {
+                return u.toExcuse();
             }
-        });
+            var doc = u.value().parse(bis);
+            doc.getDocumentElement().normalize();
+            return TGS_UnionExcuse.of(doc);
+        } catch (SAXException | IOException ex) {
+            return TGS_UnionExcuse.ofExcuse(ex);
+        }
     }
 
-    public static Document of(Path source) {
-        return TGS_UnSafe.call(() -> {
+    public static TGS_UnionExcuse<Document> of(Path source) {
+        try {
             var input = source.toFile();
-            var doc = createBuilder().parse(input);
+            var u = createBuilder();
+            if (u.isExcuse()) {
+                return u.toExcuse();
+            }
+            var doc = u.value().parse(input);
             doc.getDocumentElement().normalize();
-            return doc;
-        });
+            return TGS_UnionExcuse.of(doc);
+        } catch (SAXException | IOException ex) {
+            return TGS_UnionExcuse.ofExcuse(ex);
+        }
     }
 
     public static Node getNodeRoot(Document doc) {
@@ -148,15 +166,18 @@ public class TS_FileXmlUtils {
         doc.appendChild(child);
     }
 
-    public static void save(Document doc, Path dest) {
-        TGS_UnSafe.run(() -> {
+    public static TGS_UnionExcuseVoid save(Document doc, Path dest) {
+        try {
             var factory = TransformerFactory.newInstance();
             var transformer = factory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             var docSource = new DOMSource(doc);
             var streamResult = new StreamResult(dest.toFile());
             transformer.transform(docSource, streamResult);
-        });
+            return TGS_UnionExcuseVoid.ofVoid();
+        } catch (TransformerException ex) {
+            return TGS_UnionExcuseVoid.ofExcuse(ex);
+        }
     }
     /*
     //https://stackoverflow.com/questions/12477392/prettify-xml-in-org-w3c-dom-document-to-file
