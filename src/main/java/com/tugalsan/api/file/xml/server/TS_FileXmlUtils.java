@@ -125,7 +125,7 @@ public class TS_FileXmlUtils {
                     .map(child -> /*isText(node) ? node.getTextContent() :*/ getText(child))
                     .collect(Collectors.joining(""));
         }
-        return TGS_StringUtils.toNullIfEmpty(node.getTextContent());
+        return TGS_StringUtils.cmn().toNullIfEmpty(node.getTextContent());
     }
 
     public static Node newNodeBranch(Document doc, String nodeName) {
