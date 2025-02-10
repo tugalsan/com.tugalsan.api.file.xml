@@ -1,17 +1,18 @@
 package com.tugalsan.api.file.xml.server.table;
 
 import com.tugalsan.api.file.xml.server.TS_FileXmlUtils;
+import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.*;
 import org.w3c.dom.*;
 import com.tugalsan.api.list.client.*;
-import com.tugalsan.api.unsafe.client.*;
+
 
 public class TS_FileXmlTableUtils {
 
     public static Path toFile(TGS_ListTable source, Path dest, String root, String item) {
-        return TGS_UnSafe.call(() -> {
+        return TGS_FuncMTCEUtils.call(() -> {
             List<String> headers = source.getRow(0);
             var size = source.getRowSize();
 
