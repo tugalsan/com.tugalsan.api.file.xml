@@ -1,7 +1,7 @@
 package com.tugalsan.api.file.xml.server;
 
 import com.tugalsan.api.bytes.client.*;
-import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import com.tugalsan.api.stream.client.*;
 import com.tugalsan.api.string.client.*;
 
@@ -18,7 +18,7 @@ import org.w3c.dom.*;
 public class TS_FileXmlUtils {
 
     private static DocumentBuilder createBuilder() {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             var factory = DocumentBuilderFactory.newInstance();
             return factory.newDocumentBuilder();
         });
@@ -29,7 +29,7 @@ public class TS_FileXmlUtils {
     }
 
     public static Document of(CharSequence content) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             var input = TGS_ByteArrayUtils.toByteArray(content);
             try (var bis = new ByteArrayInputStream(input)) {
                 var doc = createBuilder().parse(bis);
@@ -40,7 +40,7 @@ public class TS_FileXmlUtils {
     }
 
     public static Document of(Path source) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             var input = source.toFile();
             var doc = createBuilder().parse(input);
             doc.getDocumentElement().normalize();
@@ -150,7 +150,7 @@ public class TS_FileXmlUtils {
     }
 
     public static void save(Document doc, Path dest) {
-        TGS_FuncMTCEUtils.run(() -> {
+        TGS_FuncMTCUtils.run(() -> {
             var factory = TransformerFactory.newInstance();
             var transformer = factory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");

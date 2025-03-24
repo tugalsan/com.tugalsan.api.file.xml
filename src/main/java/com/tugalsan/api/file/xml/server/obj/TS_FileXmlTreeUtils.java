@@ -1,7 +1,7 @@
 package com.tugalsan.api.file.xml.server.obj;
 
 import com.tugalsan.api.file.xml.server.*;
-import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import com.tugalsan.api.stream.client.*;
 import com.tugalsan.api.tree.client.*;
 
@@ -42,7 +42,7 @@ public class TS_FileXmlTreeUtils {
     }
 
     public static Document toDocument(TGS_TreeAbstract<String, String> treeRoot) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             var doc = TS_FileXmlUtils.of();
             if (treeRoot instanceof TGS_TreeBranch<String, String> treeBranch) {
                 System.out.println("branch detected...");

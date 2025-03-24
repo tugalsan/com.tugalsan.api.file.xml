@@ -1,7 +1,7 @@
 package com.tugalsan.api.file.xml.server.table;
 
 import com.tugalsan.api.file.xml.server.TS_FileXmlUtils;
-import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.*;
@@ -12,7 +12,7 @@ import com.tugalsan.api.list.client.*;
 public class TS_FileXmlTableUtils {
 
     public static Path toFile(TGS_ListTable source, Path dest, String root, String item) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             List<String> headers = source.getRow(0);
             var size = source.getRowSize();
 
